@@ -1,0 +1,29 @@
+.layout {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+
+  header,
+  nav,
+  footer {
+    padding: 12px 16px;
+  }
+
+  & > main {
+    padding: 16px;
+  }
+
+  nav {
+    display: flex;
+    gap: 12px;
+  }
+
+  nav a {
+    text-decoration: none;
+  }
+
+  nav a.active {
+    font-weight: 600;
+    text-decoration: underline;
+  }
+}
