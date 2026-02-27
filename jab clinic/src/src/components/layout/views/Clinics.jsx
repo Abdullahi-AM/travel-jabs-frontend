@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import Card from "../components/ui/Card.jsx";
-import CardContainer from "../components/ui/CardContainer.jsx";
+import Card from "../../ui/Card.jsx";
+import CardContainer from "../../ui/CardContainer.jsx";
 
 export default function Clinics() {
     const [clinics, setClinics] = useState([]);
