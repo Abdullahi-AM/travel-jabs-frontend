@@ -29,5 +29,20 @@ export default function Clinics() {
     if (error) return <p>Error: {error}</p>;
     if (clinics.length === 0) return <p>No clinics found.</p>;
 
-
+return (
+    <CardContainer>
+        {clinics.map((clinic) => (
+            <Card key={clinic.ClinicID}>
+                <h3>{clinic.ClinicName}</h3>
+                <p>{clinic.ClinicAddress}</p>
+                <p>{clinic.ClinicPostcode}</p>
+                <p>Contact: {clinic.ClinicContact}</p>
+                <p>
+                    Manager: {clinic.ClinicManagerID} {" "} {clinic.ClinicManagerFirstname} {" "}
+                    {clinic.ClinicManagerLastname}
+                </p>
+            </Card>
+        ))}
+    </CardContainer>
+);
 }
