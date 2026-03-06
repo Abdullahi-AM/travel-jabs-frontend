@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import "./BookAppointment.scss";
 
 export default function BookAppointment() {
   const { clinicId } = useParams();
