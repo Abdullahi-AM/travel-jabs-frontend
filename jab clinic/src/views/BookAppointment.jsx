@@ -105,7 +105,7 @@ export default function BookAppointment() {
   };
 
   return (
-    <div>
+    <div className="BookAppointment">
       <h2>Book Appointment</h2>
 
       {submitMessage && <p>{submitMessage}</p>}
