@@ -1,8 +1,9 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 export default function BookAppointment() {
   const { clinicId } = useParams();
+  const navigate = useNavigate();
 
   const initialAppointment = {
     AppointmentDatetime: "",
@@ -15,6 +16,8 @@ export default function BookAppointment() {
   const [appointment, setAppointment] = useState(initialAppointment);
   const [patients, setPatients] = useState(null);
   const [clinicians, setClinicians] = useState(null);
+  const [errors, setErrors] = useState({});
+  const [submitMessage, setSubmitMessage] = useState(null);
 
   useEffect(() => {
     async function fetchPatients() {
@@ -46,11 +49,65 @@ export default function BookAppointment() {
     setAppointment({ ...appointment, [name]: name === "AppointmentDatetime" ? value : parseInt(value) });
   };
 
-  const handleSubmit = () => alert(JSON.stringify(appointment));
+  const isValid = {
+    AppointmentDatetime: (value) => value && value.length > 0,
+    AppointmentPatientID: (value) => value && value > 0,
+    AppointmentStaffID: (value) => value && value > 0
+  };
+
+  const errorMessage = {
+    AppointmentDatetime: "Date and time is required",
+    AppointmentPatientID: "Patient must be selected",
+    AppointmentStaffID: "Clinician must be selected"
+  };
+
+  const isValidRecord = (record) => {
+    let isRecordValid = true;
+
+    Object.keys(isValid).forEach((key) => {
+      const value = record[key];
+      if (isValid[key](value)) {
+        errors[key] = null;
+      } else {
+        errors[key] = errorMessage[key];
+        isRecordValid = false;
+      }
+    });
+
+    setErrors({ ...errors });
+    return isRecordValid;
+  };
+
+  const handleSubmit = async () => {
+    if (!isValidRecord(appointment)) return;
+
+    const request = {
+      method: "POST",
+      body: JSON.stringify(appointment),
+      headers: { "Content-Type": "application/json" }
+    };
+
+    try {
+      const response = await fetch("https://softwarehub.uk/unibase/traveljabs/v1/api/appointments", request);
+      const result = await response.json();
+
+      if (response.status >= 200 && response.status < 300) {
+        setSubmitMessage("Appointment booked successfully!");
+        setAppointment(initialAppointment);
+        setErrors({});
+      } else {
+        setSubmitMessage(`Submission unsuccessful: ${result.message}`);
+      }
+    } catch (err) {
+      setSubmitMessage(err.message);
+    }
+  };
 
   return (
     <div>
       <h2>Book Appointment</h2>
+
+      {submitMessage && <p>{submitMessage}</p>}
 
       <div className="FormTray">
         <label>
@@ -61,6 +118,7 @@ export default function BookAppointment() {
             value={appointment.AppointmentDatetime}
             onChange={handleChange}
           />
+          {errors.AppointmentDatetime && <p className="form-error">{errors.AppointmentDatetime}</p>}
         </label>
 
         <label>
@@ -81,6 +139,7 @@ export default function BookAppointment() {
               ))}
             </select>
           )}
+          {errors.AppointmentPatientID && <p className="form-error">{errors.AppointmentPatientID}</p>}
         </label>
 
         <label>
@@ -101,11 +160,13 @@ export default function BookAppointment() {
               ))}
             </select>
           )}
+          {errors.AppointmentStaffID && <p className="form-error">{errors.AppointmentStaffID}</p>}
         </label>
       </div>
 
       <div className="action-tray">
         <button onClick={handleSubmit}>Submit</button>
+        <button onClick={() => navigate("/clinics")}>Cancel</button>
       </div>
     </div>
   );
