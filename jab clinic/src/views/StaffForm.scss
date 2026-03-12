@@ -3,7 +3,7 @@ $PrimaryBlue: #005eb8;
 $DarkBlue: #003087;
 $TextColour: #212b32;
 
-.BookAppointment {
+.StaffForm {
   min-width: 400px;
   border: 1px solid $BorderGrey;
   border-radius: 4px;
@@ -65,18 +65,6 @@ button.primary:hover {
   background: #004a93;
 }
 
-.bookAppointmentButton {
-  margin-top: 10px;
-  padding: 10px 14px;
-  border-radius: 4px;
-  border: 1px solid $PrimaryBlue;
-  background: $PrimaryBlue;
-  color: white;
-  cursor: pointer;
-  font-weight: 600;
+button:hover {
+  opacity: 0.95;
 }
-
-.bookAppointmentButton:hover {
-  background: #004a93;
-}
-
