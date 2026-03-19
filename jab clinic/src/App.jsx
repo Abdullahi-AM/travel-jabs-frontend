@@ -17,6 +17,30 @@ export default function App() {
           <Route path="/appointments/:clinicId" element={<Appointments />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <main>
+          <h1>Clinics</h1>
+          {clinics.map((clinic) => (
+                          <Card key={clinic.ClinicID}>
+                              <h3>{clinic.ClinicName}</h3>
+                              <p>{clinic.ClinicAddress}</p>
+                              <p>{clinic.ClinicPostcode}</p>
+                              <p>Contact: {clinic.ClinicContact}</p>
+                              <p>Manager: {clinic.ClinicManagerFirstname} {clinic.ClinicManagerLastname}</p>
+                              </Card>
+                      ))}
+        </main>
+        <h1>Staff</h1>
+        {staff.map((staff) => (
+                          <Card key={staff.StaffID}>
+                              <h3>{staff.StaffFirstname} {staff.StaffLastname}</h3>
+                              <p>{staff.StaffRoleID}</p>
+                              <p>{staff.StaffRoleName}</p>
+                              <p>{staff.StaffClinicID}</p>
+                              <p>{staff.StaffClinicName}</p>
+                              
+                              </Card>
+                             
+                      ))}
       </Layout>
     </BrowserRouter>
   );

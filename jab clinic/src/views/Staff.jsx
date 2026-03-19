@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Card from "../components/ui/Card.jsx";
 import CardContainer from "../components/ui/CardContainer.jsx";
 import Action from "../components/ui/Actions.jsx";
-import buildReadQuery from "./Clinics.jsx";
+
 
 // Model adapted for clinics entity
 const model = {};
