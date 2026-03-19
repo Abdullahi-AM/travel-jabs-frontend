@@ -1,32 +1,105 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Card from "../components/ui/Card.jsx";
 import CardContainer from "../components/ui/CardContainer.jsx";
+import Action from "../components/ui/Actions.jsx";
 
-export default function Clinics() {
+// Model adapted for clinics entity
+const model = {};
+
+model.table = 'Clinics';
+model.fields = ['ClinicID', 'ClinicName', 'ClinicAddress', 'ClinicPostcode', 'ClinicContact', 'ClinicManagerID'];
+
+model.buildCreateQuery = (req) => {
+    return `INSERT INTO ${model.table} SET
+        ClinicName=:ClinicName,
+        ClinicAddress=:ClinicAddress,
+        ClinicPostcode=:ClinicPostcode,
+        ClinicContact=:ClinicContact,
+        ClinicManagerID=:ClinicManagerID
+    `;    
+};
+
+model.buildReadQuery = (req, variant) => {
+    // Initialisation
+    let table = model.table;
+    let fields = model.fields;
+    
+    // Resolve foreign keys
+    table = `(${table} LEFT JOIN ManagerID ON ClinicManagerID)`;
+    fields = [...fields, 'CONCAT(ClinicManagerFirstname, " ", ClinicManagerLastname) AS ClinicManagerName'];
+
+    // Build and return query
+    let where = '';
+    
+    switch(variant) {
+        case 'primary':
+            const id = req.params.id;
+            where = `WHERE ClinicID=:ID`
+            break;
+        
+    }
+
+    return `SELECT ${fields} FROM ${table} ${where}`;
+};
+
+
+class Controller {
+    constructor(model) {
+        this.buildReadQuery = model.buildReadQuery;
+        this.buildCreateQuery = model.buildCreateQuery;
+    }
+
+    // Adapted get method for frontend fetch
+    get = async (variant, id) => {
+        const url = `https://softwarehub.uk/unibase/traveljabs/v1/api/clinics`;
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error("Failed to fetch clinics");
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            throw new Error(`Failed to execute fetch: ${error.message}`);
+        }
+    };
+
+    // Post method 
+    post = async (req) => {
+        const url = 'https://softwarehub.uk/unibase/traveljabs/v1/api/clinics';
+        const parameters = req.body;
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(parameters)
+            });
+            if (!response.ok) throw new Error("Failed to create clinic");
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            throw new Error(`Failed to execute post: ${error.message}`);
+        }
+    };
+}
+
+const Clinics = () => {
+    const navigate = useNavigate();
     const [clinics, setClinics] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
-        async function fetchClinics() {
+        const controller = new Controller(model);
+        const loadClinics = async () => {
             try {
-                const response = await fetch("https://softwarehub.uk/unibase/traveljabs/v1/api/clinics");
-                if (!response.ok) throw new Error("Failed to fetch clinics");
-
-                const data = await response.json();
+                const data = await controller.get();
                 setClinics(data);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
+            } catch (error) {
+                console.error(error.message);
             }
-        }
-        fetchClinics();
+        };
+        loadClinics();
     }, []);
 
-    if (loading) return <p>Loading clinics...</p>;
-    if (error) return <p>Error: {error}</p>;
-    if (clinics.length === 0) return <p>No clinics found.</p>;
+
 
     return (
         <CardContainer>
@@ -36,12 +109,18 @@ export default function Clinics() {
                     <p>{clinic.ClinicAddress}</p>
                     <p>{clinic.ClinicPostcode}</p>
                     <p>Contact: {clinic.ClinicContact}</p>
-                    <p>
-                        Manager: {clinic.ClinicManagerID} {" "} {clinic.ClinicManagerFirstname} {" "}
-                        {clinic.ClinicManagerLastname}
-                    </p>
+                    <p>Manager: {clinic.ClinicManagerName}</p>
+                 
+                        
+                         <Action.Tray buttonText={buttonText} onClick={() => navigate(`/book/${clinic.ClinicID}`)} >
+                            </Action.Tray>
+  
+  
+                    
                 </Card>
             ))}
         </CardContainer>
     );
+
 }
+export default buildReadQuery;
