@@ -17,11 +17,11 @@ import { useAuth } from '../components/auth/authContext.jsx';
 const Clinics = () => {
     // Initialisation
     const { loggedInUser } = useAuth();
-    let myClinicsEndpoint = `${apiURL}/api/clinics`;
+    let myClinicsEndpoint = `${apiURL}/clinics`;
     if (loggedInUser && loggedInUser.UserID) {
-      myClinicsEndpoint = `${apiURL}/api/clinics/${loggedInUser.UserID}`;
+      myClinicsEndpoint = `${apiURL}/clinics/${loggedInUser.UserID}`;
     }
-    const postClinicEndpoint = `${apiURL}/api/clinics`;
+    const postClinicEndpoint = `${apiURL}/clinics`;
 
     // State 
     const [selectedClinic, setSelectedClinic] = useState(null);
