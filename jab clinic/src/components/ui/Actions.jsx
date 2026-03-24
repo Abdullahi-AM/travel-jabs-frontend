@@ -1,6 +1,6 @@
-const Action = ({ children, onClick, showText, buttonText }) => (
+const Action = ({ onClick, showText, buttonText }) => (
   <button className='Action' onClick={onClick}>
-    {children} {showText && <p>{buttonText}</p>}
+    <p>{buttonText}</p>
   </button>
 );
 
@@ -15,93 +15,67 @@ const Tray = ({ children }) => <div className='ActionTray'>{children}</div>;
 // -----------------------------------------
 
 const Add = ({ onClick, showText = false, buttonText = 'Add' }) => (
-  <Action buttonText={buttonText} onClick={onClick} showText={showText}>
-    <Icon.Plus />
-  </Action>
+  <Action buttonText={buttonText} onClick={onClick} showText={showText} />
+);
+
+const Book = ({ onClick, showText = false, buttonText = 'Book Appointment' }) => (
+  <Action buttonText={buttonText} onClick={onClick} showText={showText} />
 );
 
 const Cancel = ({ onClick, showText = false, buttonText = 'Cancel' }) => (
-  <Action buttonText={buttonText} onClick={onClick} showText={showText}>
-    <Icon.Cross />
-  </Action>
+  <Action buttonText={buttonText} onClick={onClick} showText={showText} />
 );
 
 const Collapse = ({ onClick, showText = false, buttonText = 'Collapse' }) => (
-  <Action buttonText={buttonText} onClick={onClick} showText={showText}>
-    <Icon.Collapse />
-  </Action>
+  <Action buttonText={buttonText} onClick={onClick} showText={showText} />
 );
 
 const Close = ({ onClick, showText = false, buttonText = 'Close' }) => (
-  <Action buttonText={buttonText} onClick={onClick} showText={showText}>
-    <Icon.Cross />
-  </Action>
+  <Action buttonText={buttonText} onClick={onClick} showText={showText} />
 );
 
 const Delete = ({ onClick, showText = false, buttonText = 'Delete' }) => (
-  <Action buttonText={buttonText} onClick={onClick} showText={showText}>
-    <Icon.Trash />
-  </Action>
+  <Action buttonText={buttonText} onClick={onClick} showText={showText} />
 );
 
 const Dismiss = ({ onClick, showText = false, buttonText = 'Dismiss' }) => (
-  <Action buttonText={buttonText} onClick={onClick} showText={showText}>
-    <Icon.Cross />
-  </Action>
+  <Action buttonText={buttonText} onClick={onClick} showText={showText} />
 );
 
 const Expand = ({ onClick, showText = false, buttonText = 'Expand' }) => (
-  <Action buttonText={buttonText} onClick={onClick} showText={showText}>
-    <Icon.Expand />
-  </Action>
+  <Action buttonText={buttonText} onClick={onClick} showText={showText} />
 );
 
 const Favourites = ({ onClick, showText = false, buttonText = 'List favourites' }) => (
-  <Action buttonText={buttonText} onClick={onClick} showText={showText}>
-    <Icon.RedHeart />
-  </Action>
+  <Action buttonText={buttonText} onClick={onClick} showText={showText} />
 );
 
 const ListAll = ({ onClick, showText = false, buttonText = 'List all' }) => (
-  <Action buttonText={buttonText} onClick={onClick} showText={showText}>
-    <Icon.List />
-  </Action>
+  <Action buttonText={buttonText} onClick={onClick} showText={showText} />
 );
 
 const Modify = ({ onClick, showText = false, buttonText = 'Modify' }) => (
-  <Action buttonText={buttonText} onClick={onClick} showText={showText}>
-    <Icon.Pen />
-  </Action>
+  <Action buttonText={buttonText} onClick={onClick} showText={showText} />
 );
 
 const No = ({ onClick, showText = false, buttonText = 'No' }) => (
-  <Action buttonText={buttonText} onClick={onClick} showText={showText}>
-    <Icon.Cross />
-  </Action>
+  <Action buttonText={buttonText} onClick={onClick} showText={showText} />
 );
 
 const Submit = ({ onClick, showText = false, buttonText = 'Submit' }) => (
-  <Action buttonText={buttonText} onClick={onClick} showText={showText}>
-    <Icon.Tick />
-  </Action>
+  <Action buttonText={buttonText} onClick={onClick} showText={showText} />
 );
 
 const Subscribe = ({ onClick, showText = false, buttonText = 'Subscribe' }) => (
-  <Action buttonText={buttonText} onClick={onClick} showText={showText}>
-    <Icon.Tick />
-  </Action>
+  <Action buttonText={buttonText} onClick={onClick} showText={showText} />
 );
 
 const Yes = ({ onClick, showText = false, buttonText = 'Yes' }) => (
-  <Action buttonText={buttonText} onClick={onClick} showText={showText}>
-    <Icon.Tick />
-  </Action>
+  <Action buttonText={buttonText} onClick={onClick} showText={showText} />
 );
 
 const Unsubscribe = ({ onClick, showText = false, buttonText = 'Unsubscribe' }) => (
-  <Action buttonText={buttonText} onClick={onClick} showText={showText}>
-    <Icon.Cross />
-  </Action>
+  <Action buttonText={buttonText} onClick={onClick} showText={showText} />
 );
 
 // -----------------------------------------
@@ -111,6 +85,7 @@ const Unsubscribe = ({ onClick, showText = false, buttonText = 'Unsubscribe' }) 
 Action.Tray = Tray;
 
 Action.Add = Add;
+Action.Book = Book;
 Action.Cancel = Cancel;
 Action.Close = Close;
 Action.Collapse = Collapse;

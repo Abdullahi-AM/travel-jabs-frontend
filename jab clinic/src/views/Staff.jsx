@@ -3,123 +3,109 @@ import { useNavigate } from "react-router-dom";
 import Card from "../components/ui/Card.jsx";
 import CardContainer from "../components/ui/CardContainer.jsx";
 import Action from "../components/ui/Actions.jsx";
+import { Model, useModel } from '../components/ui/Model.jsx';
+import useLoad from '../API/useLoad.js';
+import apiURL from '../API/apiURL.js';
+import Spacer from '../../UI/Spacer.jsx';
+import API from '../API/API.js';
+import StaffCard from '../components/Entity/StaffCard.jsx';
+import StaffForm from './StaffForm.jsx';
+import { Alert, Error, useAlert } from '../components/ui/Alert.jsx';
 
-
-// Model adapted for clinics entity
-const model = {};
-
-model.table = 'Staff';
-model.fields = ['StaffID', 'StaffFirstname', 'StaffLastname', 'StaffRoleID', 'StaffClinicID', 'StaffRoleName', 'StaffClinicName'];
-
-model.buildCreateQuery = (req) => {
-    return `INSERT INTO ${model.table} SET
-        StaffFirstname=:StaffFirstname,
-        StaffLastname=:StaffLastname,
-        StaffRoleID=:StaffRoleID,
-        StaffClinicID=:StaffClinicID,
-        StaffRoleName=:StaffRoleName,
-        StaffClinicName=:StaffClinicName
-    `;    
-};
-
-model.buildReadQuery = (req, variant) => {
-    // Initialisation
-    let table = model.table;
-    let fields = model.fields;
-    
-    // Resolve foreign keys
-    table = `(${table} LEFT JOIN Roles ON StaffRoleID=RoleID LEFT JOIN Clinics ON StaffClinicID=ClinicID )`
-    fields = [...fields, 'RoleName AS StaffRoleName', 'ClinicName AS StaffClinicName'];
-
-    // Build and return query
-    let where = '';
-    
-    switch(variant) {
-        case 'primary':
-            const id = req.params.id;
-            where = `WHERE StaffID=:ID`
-            break;
-        
-        
-    }
-
-    return `SELECT ${fields} FROM ${table} ${where}`;
-};
-
-
-class Controller {
-    constructor(model) {
-        this.buildReadQuery = model.buildReadQuery;
-        this.buildCreateQuery = model.buildCreateQuery;
-    }
-
-    // Adapted get method for frontend fetch
-    get = async (variant, id) => {
-        const url = `https://softwarehub.uk/unibase/traveljabs/v1/api/clinics${variant === 'primary' ? '/' + id : ''}`;
-        try {
-            const response = await fetch(url);
-            if (!response.ok) throw new Error("Failed to fetch clinics");
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            throw new Error(`Failed to execute fetch: ${error.message}`);
-        }
-    };
-
-    // Post method
-    post = async (req) => {
-        const url = 'https://softwarehub.uk/unibase/traveljabs/v1/api/staff/clinics';
-        const parameters = req.body;
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(parameters)
-            });
-            if (!response.ok) throw new Error("Failed to create clinic");
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            throw new Error(`Failed to execute post: ${error.message}`);
-        }
-    };
-
-     <Action.Tray>
-                     <Action.Modify showText onClick={() => onSelect(module)} />
-                     <Action.Delete showText  />
-                
-                 </Action.Tray>
-    
-}
 
 const Staff = () => {
-    const navigate = useNavigate();
-    const [staff, setStaff] = useState([]);         
+    // Initialisation
+    const { loggedInUser } = useAuth();
+    const myStaffEndpoint = 
+    loggedInUser.UsertypeID === 1
+      ? `${apiURL}/api/staff/clinics/${loggedInUser.UserID}`
+      : `${apiURL}/api/staffclinics/${loggedInUser.UserID}`;
+    const postStaffEndpoint = `${apiURL}/api/staff/clinics`;
 
-    useEffect(() => {
-        const controller = new Controller(model);
+    // State 
+    const [selectedStaff, setSelectedStaff] = useState(null);
+    const [isFormOpen, openForm, closeForm] = useModel(false);
+    const [isAlertOpen, alertMessage, openAlert, closeAlert] = useAlert();
+    const [isErrorOpen, errorMessage, openError, closeError] = useAlert();
+    
+    const [staff, loadingMessage, loadStaff] = useLoad(myStaffEndpoint);
+    };
 
+    //Handlers
+    const handleSelect = (staffMember) => {
+      setSelectedStaff(staffMember);
+      openForm();
 
+    };
 
+    const handleCancel = () => {
+      setSelectedStaff(null);
+      closeForm();
 
-        const loadStaff = async () => {
-            try {
+    }
+    const handleAdd = async (staffMember) => {
+      const result = await API.post(postStaffEndpoint,staffMember);
+      checkSuccess(result);
+      
+    };
 
+    const handleModify = async (staffMember) => {
+      const putStaffEndpoint = `${postStaffEndpoint}/${staffMember.StaffID}`;
+      const result = await API.post(putStaffEndpoint,staffMember);
+      checkSuccess(result);
+    };
 
-                const data = await controller.get();
-                setStaff(data);
-            } catch (error) {
-                console.error(error.message);
-            }
-        };
-        loadStaff();
-    }, []);
+    const checkSuccess = (result) => {
+       if (result.isSuccess) {
+        handleCancel();
+        loadStaff(myStaffEndpoint);
+        openAlert('Submission successful');
+      }
+      else openError(`Submission unsuccessful: ${result.message}`);
+    };
 
-           
+    //View
+      return (
+      <>
+          <h1>Staff</h1>
 
+          { isFormOpen && (
+          <Model title={selectedStaff ? 'Modify staff' : 'Add new staff'} >
+            <StaffForm 
+              initialStaff={selectedStaff}
+              onCancel={closeForm} 
+              onSubmit={selectedStaff ? handleModify : handleAdd} 
+            />
+          </Model>
+      )}
 
-}
+          {isAlertOpen && <Alert message={alertMessage} onDismiss={closeAlert} />}
+          {isErrorOpen && <Error message={errorMessage} onDismiss={closeError} />}
+          <Spacer>
+          
+          <Action.Tray>
+            <Action.Add showText buttonText="Add new staff" onClick={openForm} />
 
-   
-     
+          </Action.Tray>
+        
+      
+          {!staff? (
+                      <p>Loading records ...</p>
+                    ) : (
+                    <CardContainer>
+                    {
+                      staff.map((staffMember)=>{
+                        return(
+                          <StaffCard key={staffMember.StaffID} staff={staffMember} onSelect={handleSelect}/>
+                            
+                        )
+                      })
+                    }
+                    </CardContainer>
+                    )}
+          </Spacer>
+      </>
+      );
+    
 
+export default Staff;
