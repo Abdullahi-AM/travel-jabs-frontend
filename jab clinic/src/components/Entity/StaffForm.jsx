@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import useLoad from './components/API/useLoad.js';
-import apiURL from './components/API/apiURL.js';
-import Form from '../../ui/Form.jsx';
+import useLoad from '../api/useLoad.js';
+import apiURL from '../api/apiURL.js';
+import Form from '../ui/Form.jsx';
 
 
 
@@ -9,7 +9,6 @@ const defaultStaff = {
     StaffID: null,
     StaffFirstname: '',
     StaffLastname: '',
-    StaffID: null,
     StaffClinicID: null,
     StaffRoleID: null,
     StaffRoleName: '',
@@ -67,12 +66,12 @@ const StaffForm = ({ initialStaff, onSubmit,onCancel}) => {
     },
 };
 
-    const staffEndpoint = `${apiURL}/api/staff`;
+    const staffEndpoint = `${apiURL}/staff`;
     
     
     //State
     const [staff, errors, handleChange, handleSubmit] = Form.useForm(initialStaff ? initialStaff : defaultStaff, conformance, validation, onSubmit);
-    const [loadingStaffMessage, loadStaff] = useLoad(myStaffEndpoint);
+    const [staffList, loadingStaffMessage] = useLoad(staffEndpoint);
    
 
     
@@ -101,8 +100,8 @@ const clinicContactOptions = {
         noOptionsMessage: loadingStaffMessage,
         unselected: { value: '0', label: 'No name selected' },
         list:
-            staff &&
-            staff.map((user) => ({
+            staffList &&
+            staffList.map((user) => ({
                 value: user.UserID,
                 label: `${user.UserFirstname} ${user.UserLastname}`,
             })),
@@ -129,13 +128,13 @@ const clinicContactOptions = {
 
            <label>
             Staff Name
-                    { !staff ? (
+                    { !staffList ? (
                         <p>{loadingStaffMessage}</p>
                     ) : (
                     <select name="StaffID" value={conformance.js2html.StaffID(staff.StaffID)} onChange={handleChange}>
                         <option value='0' hidden>No staff selected</option>
-                            {staff.map( (staff) => (
-                                <option key={staff.StaffID} value={staff.StaffID}>{staff.StaffFirstname} {staff.StaffLastname}</option> 
+                            {staffList.map((staffMember) => (
+                                <option key={staffMember.StaffID} value={staffMember.StaffID}>{staffMember.StaffFirstname} {staffMember.StaffLastname}</option> 
                         ))}
                     </select>
                     )}

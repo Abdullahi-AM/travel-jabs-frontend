@@ -83,10 +83,7 @@ const Clinics = () => {
           {isErrorOpen && <Error message={errorMessage} onDismiss={closeError} />}
           <Spacer>
           
-          <Action.Tray>
-            <Action.Add showText buttonText="Add new clinic" onClick={openForm} />
-
-          </Action.Tray>
+          
         
       
           {!clinics? (

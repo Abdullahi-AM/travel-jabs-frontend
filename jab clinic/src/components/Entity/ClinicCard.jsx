@@ -22,6 +22,8 @@ const ClinicCard = ({ clinic, onSelect }) => {
                 <Action.Tray>
                      <Action.Modify showText onClick={() => onSelect(clinic)} />
                      <Action.Delete showText />
+                </Action.Tray>
+                <Action.Tray>
                      <Action.Book showText onClick={handleBookAppointment} />
                 </Action.Tray>
                 </Spacer>

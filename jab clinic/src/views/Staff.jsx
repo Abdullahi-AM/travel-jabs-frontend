@@ -1,26 +1,25 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Card from "../components/ui/Card.jsx";
+import { useState } from "react";
 import CardContainer from "../components/ui/CardContainer.jsx";
 import Action from "../components/ui/Actions.jsx";
 import { Model, useModel } from '../components/ui/Model.jsx';
-import useLoad from '../API/useLoad.js';
-import apiURL from '../API/apiURL.js';
-import Spacer from '../../UI/Spacer.jsx';
-import API from '../API/API.js';
+import useLoad from '../components/api/useLoad.js';
+import apiURL from '../components/api/apiURL.js';
+import Spacer from '../components/ui/Spacer.jsx';
+import API from '../components/api/API.js';
 import StaffCard from '../components/Entity/StaffCard.jsx';
-import StaffForm from './StaffForm.jsx';
+import StaffForm from '../components/Entity/StaffForm.jsx';
 import { Alert, Error, useAlert } from '../components/ui/Alert.jsx';
+import { useAuth } from '../components/auth/authContext.jsx';
 
 
 const Staff = () => {
     // Initialisation
     const { loggedInUser } = useAuth();
-    const myStaffEndpoint = 
-    loggedInUser.UsertypeID === 1
-      ? `${apiURL}/api/staff/clinics/${loggedInUser.UserID}`
-      : `${apiURL}/api/staffclinics/${loggedInUser.UserID}`;
-    const postStaffEndpoint = `${apiURL}/api/staff/clinics`;
+    let myStaffEndpoint = `${apiURL}/staff`;
+    if (loggedInUser && loggedInUser.UserID) {
+      myStaffEndpoint = `${apiURL}/staff/clinics/${loggedInUser.UserID}`;
+    }
+    const postStaffEndpoint = `${apiURL}/staff/clinics`;
 
     // State 
     const [selectedStaff, setSelectedStaff] = useState(null);
@@ -29,7 +28,6 @@ const Staff = () => {
     const [isErrorOpen, errorMessage, openError, closeError] = useAlert();
     
     const [staff, loadingMessage, loadStaff] = useLoad(myStaffEndpoint);
-    };
 
     //Handlers
     const handleSelect = (staffMember) => {
@@ -106,6 +104,6 @@ const Staff = () => {
           </Spacer>
       </>
       );
-    
+    };
 
 export default Staff;

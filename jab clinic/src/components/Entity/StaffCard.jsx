@@ -1,6 +1,6 @@
-import { Card } from '../../UI/Card.jsx';
-import Spacer from '../../UI/Spacer.jsx';
-import Action from '../../UI/Actions.jsx';
+import Card from '../ui/Card.jsx';
+import Spacer from '../ui/Spacer.jsx';
+import Action from '../ui/Actions.jsx';
 import './StaffCard.scss';
 
 const StaffCard = ({ staff, onSelect }) => {
