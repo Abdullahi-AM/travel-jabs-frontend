@@ -1,5 +1,2 @@
-const apiURL = "https://softwarehub.uk/unibase/traveljabs/v1/api";
- 
-
-
- export default apiURL;
+const apiURL = "http://localhost:3000/api";
+export default apiURL;

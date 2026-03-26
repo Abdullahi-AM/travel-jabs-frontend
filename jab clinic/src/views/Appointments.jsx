@@ -1,5 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
+import API from "../components/api/API.js";
+import apiURL from "../components/api/apiURL.js";
 import Card from "../components/ui/Card.jsx";
 import CardContainer from "../components/ui/CardContainer.jsx";
 
@@ -17,10 +19,9 @@ export default function Appointments() {
 
   const fetchAppointments = async () => {
     try {
-      const response = await fetch("https://softwarehub.uk/unibase/traveljabs/v1/api/appointments");
-      if (!response.ok) throw new Error("Failed to fetch appointments");
-      const data = await response.json();
-      setAppointments(data.filter((a) => a.AppointmentClinicID === parseInt(clinicId)));
+      const response = await API.get(`${apiURL}/appointments/clinics/${clinicId}`);
+      if (response.isSuccess) setAppointments(response.result);
+      else setAppointments([]);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -34,24 +35,12 @@ export default function Appointments() {
 
   useEffect(() => {
     async function fetchPatients() {
-      try {
-        const response = await fetch("https://softwarehub.uk/unibase/traveljabs/v1/api/patients");
-        if (!response.ok) throw new Error("Failed to fetch patients");
-        const data = await response.json();
-        setPatients(data);
-      } catch (err) {
-        console.log(err.message);
-      }
+      const response = await API.get(`${apiURL}/patients`);
+      if (response.isSuccess) setPatients(response.result);
     }
     async function fetchClinicians() {
-      try {
-        const response = await fetch(`https://softwarehub.uk/unibase/traveljabs/v1/api/staff/clinics/${clinicId}/clinicians`);
-        if (!response.ok) throw new Error("Failed to fetch clinicians");
-        const data = await response.json();
-        setClinicians(data);
-      } catch (err) {
-        console.log(err.message);
-      }
+      const response = await API.get(`${apiURL}/staff/clinics/${clinicId}/clinicians`);
+      if (response.isSuccess) setClinicians(response.result);
     }
     fetchPatients();
     fetchClinicians();
@@ -106,27 +95,14 @@ export default function Appointments() {
 
   const handleSubmit = async () => {
     if (!isValidRecord(selectedAppointment)) return;
-
-    const request = {
-      method: "PUT",
-      body: JSON.stringify(selectedAppointment),
-      headers: { "Content-Type": "application/json" }
-    };
-
-    try {
-      const response = await fetch(`https://softwarehub.uk/unibase/traveljabs/v1/api/appointments/${selectedAppointment.AppointmentID}`, request);
-      const result = await response.json();
-
-      if (response.status >= 200 && response.status < 300) {
-        setSubmitMessage("Appointment updated successfully!");
-        setSelectedAppointment(null);
-        setErrors({});
-        fetchAppointments();
-      } else {
-        setSubmitMessage(`Update unsuccessful: ${result.message}`);
-      }
-    } catch (err) {
-      setSubmitMessage(err.message);
+    const response = await API.put(`${apiURL}/appointments/${selectedAppointment.AppointmentID}`, selectedAppointment);
+    if (response.isSuccess) {
+      setSubmitMessage("Appointment updated successfully!");
+      setSelectedAppointment(null);
+      setErrors({});
+      fetchAppointments();
+    } else {
+      setSubmitMessage(`Update unsuccessful: ${response.message}`);
     }
   };
 

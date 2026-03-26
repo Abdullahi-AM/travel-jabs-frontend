@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import "./BookAppointment.scss";
+import API from "../components/api/API.js";
+import apiURL from "../components/api/apiURL.js";
 
 export default function BookAppointment() {
   const { clinicId } = useParams();
@@ -22,24 +23,12 @@ export default function BookAppointment() {
 
   useEffect(() => {
     async function fetchPatients() {
-      try {
-        const response = await fetch("https://softwarehub.uk/unibase/traveljabs/v1/api/patients");
-        if (!response.ok) throw new Error("Failed to fetch patients");
-        const data = await response.json();
-        setPatients(data);
-      } catch (err) {
-        console.log(err.message);
-      }
+      const response = await API.get(`${apiURL}/patients`);
+      if (response.isSuccess) setPatients(response.result);
     }
     async function fetchClinicians() {
-      try {
-        const response = await fetch(`https://softwarehub.uk/unibase/traveljabs/v1/api/staff/clinics/${clinicId}/clinicians`);
-        if (!response.ok) throw new Error("Failed to fetch clinicians");
-        const data = await response.json();
-        setClinicians(data);
-      } catch (err) {
-        console.log(err.message);
-      }
+      const response = await API.get(`${apiURL}/staff/clinics/${clinicId}/clinicians`);
+      if (response.isSuccess) setClinicians(response.result);
     }
     fetchPatients();
     fetchClinicians();
@@ -64,7 +53,6 @@ export default function BookAppointment() {
 
   const isValidRecord = (record) => {
     let isRecordValid = true;
-
     Object.keys(isValid).forEach((key) => {
       const value = record[key];
       if (isValid[key](value)) {
@@ -74,38 +62,24 @@ export default function BookAppointment() {
         isRecordValid = false;
       }
     });
-
     setErrors({ ...errors });
     return isRecordValid;
   };
 
   const handleSubmit = async () => {
     if (!isValidRecord(appointment)) return;
-
-    const request = {
-      method: "POST",
-      body: JSON.stringify(appointment),
-      headers: { "Content-Type": "application/json" }
-    };
-
-    try {
-      const response = await fetch("https://softwarehub.uk/unibase/traveljabs/v1/api/appointments", request);
-      const result = await response.json();
-
-      if (response.status >= 200 && response.status < 300) {
-        setSubmitMessage("Appointment booked successfully!");
-        setAppointment(initialAppointment);
-        setErrors({});
-      } else {
-        setSubmitMessage(`Submission unsuccessful: ${result.message}`);
-      }
-    } catch (err) {
-      setSubmitMessage(err.message);
+    const response = await API.post(`${apiURL}/appointments`, appointment);
+    if (response.isSuccess) {
+      setSubmitMessage("Appointment booked successfully!");
+      setAppointment(initialAppointment);
+      setErrors({});
+    } else {
+      setSubmitMessage(`Submission unsuccessful: ${response.message}`);
     }
   };
 
   return (
-    <div className="BookAppointment">
+    <div>
       <h2>Book Appointment</h2>
 
       {submitMessage && <p>{submitMessage}</p>}
