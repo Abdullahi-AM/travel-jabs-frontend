@@ -40,6 +40,7 @@ export default function Clinics() {
           <p>Contact: {clinic.ClinicContact}</p>
           <button onClick={() => navigate(`/book/${clinic.ClinicID}`)}>Book Appointment</button>
           <button onClick={() => navigate(`/appointments/${clinic.ClinicID}`)}>View Appointments</button>
+          <button onClick={() => navigate(`/staff/${clinic.ClinicID}`)}>View Staff</button>
         </Card>
       ))}
     </CardContainer>
