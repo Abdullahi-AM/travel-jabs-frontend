@@ -12,7 +12,6 @@ export default function Layout({ children }) {
         <NavLink to="/" end>Home</NavLink>
         <NavLink to="/clinics">Clinics</NavLink>
         <NavLink to="/vaccines">Vaccines</NavLink>
-        <NavLink to="/staff">Staff</NavLink>
       </nav>
 
       <main>{children}</main>
