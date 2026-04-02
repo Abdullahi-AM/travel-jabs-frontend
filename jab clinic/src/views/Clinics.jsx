@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../components/auth/authContext.jsx";
 import API from "../components/api/API.js";
 import apiURL from "../components/api/apiURL.js";
 import Card from "../components/ui/Card.jsx";
@@ -7,6 +8,7 @@ import CardContainer from "../components/ui/CardContainer.jsx";
 
 export default function Clinics() {
   const navigate = useNavigate();
+  const { loggedInUser } = useAuth();
   const [clinics, setClinics] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -39,8 +41,12 @@ export default function Clinics() {
           <p>{clinic.ClinicPostcode}</p>
           <p>Contact: {clinic.ClinicContact}</p>
           <button onClick={() => navigate(`/book/${clinic.ClinicID}`)}>Book Appointment</button>
-          <button onClick={() => navigate(`/appointments/${clinic.ClinicID}`)}>View Appointments</button>
-          <button onClick={() => navigate(`/staff/${clinic.ClinicID}`)}>View Staff</button>
+          {(loggedInUser.UserRoleID === 1 || loggedInUser.UserRoleID === 2) && (
+            <button onClick={() => navigate(`/appointments/${clinic.ClinicID}`)}>View Appointments</button>
+          )}
+          {loggedInUser.UserRoleID === 1 && (
+            <button onClick={() => navigate(`/staff/${clinic.ClinicID}`)}>View Staff</button>
+          )}
         </Card>
       ))}
     </CardContainer>

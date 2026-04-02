@@ -20,18 +20,14 @@ const patient = {
 };
 
 const Login = () => {
-  // Initialisation -------------------------------------------
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  // State ----------------------------------------------------
-  // Handlers -------------------------------------------------
   const handleLogin = (user) => {
     login(user);
     navigate("/");
   };
 
-  // View -----------------------------------------------------
   return (
     <>
       <h1>Login</h1>
