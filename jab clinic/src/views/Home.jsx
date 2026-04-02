@@ -27,6 +27,11 @@ export default function Home() {
           <h3>Meet staff</h3>
           <p>Manage and review staff records linked to clinics.</p>
         </Link>
+
+        <Link to="/about-me" className="home-link-card">
+          <h3>About me</h3>
+          <p>Find Out More Here.</p>
+        </Link>
       </div>
     </section>
   );
