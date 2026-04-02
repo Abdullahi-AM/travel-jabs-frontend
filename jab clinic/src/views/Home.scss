@@ -1,0 +1,52 @@
+.home-page {
+  display: grid;
+  gap: 20px;
+}
+
+.home-hero {
+  background: white;
+  border: 1px solid #d8dde0;
+  border-left: 6px solid #005eb8;
+  border-radius: 6px;
+  padding: 18px;
+}
+
+.home-hero h2 {
+  margin-top: 0;
+  margin-bottom: 8px;
+  color: #003087;
+}
+
+.home-hero p {
+  margin: 0;
+}
+
+.home-links {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+}
+
+.home-link-card {
+  display: block;
+  background: white;
+  border: 1px solid #d8dde0;
+  border-radius: 6px;
+  padding: 16px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.home-link-card h3 {
+  margin-top: 0;
+  margin-bottom: 6px;
+  color: #005eb8;
+}
+
+.home-link-card p {
+  margin: 0;
+}
+
+.home-link-card:hover {
+  border-color: #005eb8;
+}

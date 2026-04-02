@@ -4,11 +4,15 @@ import "./Layout.scss";
 export default function Layout({ children }) {
   return (
     <div className="layout">
-      <header>
-        <h1>Travel Jabs</h1>
+      <header className="layout-header">
+        <div className="header-strip" />
+        <div className="header-inner">
+          <h1>Travel Jabs Clinic</h1>
+          <p>Vaccinations and travel health advice</p>
+        </div>
       </header>
 
-      <nav>
+      <nav className="layout-nav">
         <NavLink to="/" end>Home</NavLink>
         <NavLink to="/clinics">Clinics</NavLink>
         <NavLink to="/vaccines">Vaccines</NavLink>
