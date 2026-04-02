@@ -1,22 +1,24 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState } from "react";
 
 const AuthContext = createContext(null);
 
-export const AuthProvider = ({children}) => {
- 
- 
-  const [loggedInUser, setLoggedInUser] = useState(null);
+export const AuthProvider = ({ children }) => {
+  // Initialisation -------------------------------------------
+  const initialUser = null;
 
+  // State ----------------------------------------------------
+  const [loggedInUser, setLoggedInUser] = useState(initialUser);
+
+  // Handlers -------------------------------------------------
   const login = (user) => setLoggedInUser(user);
   const logout = () => setLoggedInUser(null);
 
+  // View -----------------------------------------------------
   return (
-  <AuthContext.Provider value={{ loggedInUser, login, logout }}>
-    {children}
-  </AuthContext.Provider>
+    <AuthContext value={{ loggedInUser, login, logout }}>
+      {children}
+    </AuthContext>
   );
 };
 
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
+export const useAuth = () => useContext(AuthContext);
