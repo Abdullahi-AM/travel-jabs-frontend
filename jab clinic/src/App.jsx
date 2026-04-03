@@ -8,6 +8,7 @@ import Appointments from "./views/Appointments";
 import Vaccines from "./views/Vaccines";
 import Staff from "./views/Staff";
 import AboutMe from "./views/AboutMe";
+import Patients from "./views/Patients";
 import Login from "./views/Login";
 import NotFound from "./views/NotFound";
 
@@ -23,6 +24,7 @@ export default function App() {
             <Route path="/appointments/:clinicId" element={<Appointments />} />
             <Route path="/vaccines" element={<Vaccines />} />
             <Route path="/staff/:clinicId" element={<Staff />} />
+            <Route path="/patients" element={<Patients />} />
             <Route path="/about-me" element={<AboutMe />} />
             <Route path="/login" element={<Login />} />
             <Route path="*" element={<NotFound />} />

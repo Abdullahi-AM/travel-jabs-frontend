@@ -24,6 +24,9 @@ export default function Layout({ children }) {
             {(loggedInUser.UserRoleID === 1 || loggedInUser.UserRoleID === 2) && (
               <NavLink to="/vaccines">Vaccines</NavLink>
             )}
+            {(loggedInUser.UserRoleID === 1 || loggedInUser.UserRoleID === 2) && (
+              <NavLink to="/patients">Patients</NavLink>
+            )}
             <NavLink to="/about-me">About Me</NavLink>
           </>
         )}
