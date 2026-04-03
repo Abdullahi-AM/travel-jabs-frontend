@@ -36,6 +36,13 @@ export default function Home() {
             </Link>
           )}
 
+          {(loggedInUser.UserRoleID === 1 || loggedInUser.UserRoleID === 2) && (
+            <Link to="/patients" className="home-link-card">
+              <h3>View patients</h3>
+              <p>Manage and review patient records.</p>
+            </Link>
+          )}
+
           <Link to="/about-me" className="home-link-card">
             <h3>About me</h3>
             <p>Find Out More Here.</p>

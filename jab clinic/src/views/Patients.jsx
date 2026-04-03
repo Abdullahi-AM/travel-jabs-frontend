@@ -16,6 +16,7 @@ export default function Patients() {
   const [patients, setPatients] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedPatient, setSelectedPatient] = useState(null);
   const [newPatient, setNewPatient] = useState(initialPatient);
   const [isAdding, setIsAdding] = useState(false);
   const [errors, setErrors] = useState({});
@@ -66,6 +67,7 @@ export default function Patients() {
 
   const handleAdd = () => {
     setIsAdding(true);
+    setSelectedPatient(null);
     setNewPatient(initialPatient);
     setSubmitMessage(null);
     setErrors({});
@@ -90,7 +92,43 @@ export default function Patients() {
     }
   };
 
+  const handleModify = (patient) => {
+    setSelectedPatient({ ...patient });
+    setIsAdding(false);
+    setSubmitMessage(null);
+    setErrors({});
+  };
+
+  const handleModifyChange = (event) => {
+    const { name, value } = event.target;
+    setSelectedPatient({ ...selectedPatient, [name]: value });
+  };
+
+  const handleModifySubmit = async () => {
+    if (!isValidRecord(selectedPatient)) return;
+    const response = await API.put(`${apiURL}/patients/${selectedPatient.PatientID}`, selectedPatient);
+    if (response.isSuccess) {
+      setSubmitMessage("Patient updated successfully!");
+      setSelectedPatient(null);
+      setErrors({});
+      fetchPatients();
+    } else {
+      setSubmitMessage(`Failed to update: ${response.message}`);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    const response = await API.delete(`${apiURL}/patients/${id}`);
+    if (response.isSuccess) {
+      setSubmitMessage("Patient deleted successfully!");
+      fetchPatients();
+    } else {
+      setSubmitMessage(`Failed to delete: ${response.message}`);
+    }
+  };
+
   const handleCancel = () => {
+    setSelectedPatient(null);
     setIsAdding(false);
     setSubmitMessage(null);
     setErrors({});
@@ -140,6 +178,38 @@ export default function Patients() {
         </div>
       )}
 
+      {selectedPatient && (
+        <div className="FormTray">
+          <label>
+            First Name
+            <input type="text" name="PatientFirstname" value={selectedPatient.PatientFirstname} onChange={handleModifyChange} />
+            {errors.PatientFirstname && <p className="form-error">{errors.PatientFirstname}</p>}
+          </label>
+          <label>
+            Last Name
+            <input type="text" name="PatientLastname" value={selectedPatient.PatientLastname} onChange={handleModifyChange} />
+            {errors.PatientLastname && <p className="form-error">{errors.PatientLastname}</p>}
+          </label>
+          <label>
+            Address
+            <input type="text" name="PatientAddress" value={selectedPatient.PatientAddress} onChange={handleModifyChange} />
+          </label>
+          <label>
+            Postcode
+            <input type="text" name="PatientPostcode" value={selectedPatient.PatientPostcode} onChange={handleModifyChange} />
+          </label>
+          <label>
+            Age
+            <input type="number" name="PatientAge" value={selectedPatient.PatientAge} onChange={handleModifyChange} />
+            {errors.PatientAge && <p className="form-error">{errors.PatientAge}</p>}
+          </label>
+          <div className="action-tray">
+            <button onClick={handleModifySubmit}>Submit</button>
+            <button onClick={handleCancel}>Cancel</button>
+          </div>
+        </div>
+      )}
+
       <CardContainer>
         {patients.map((patient) => (
           <Card key={patient.PatientID}>
@@ -147,6 +217,8 @@ export default function Patients() {
             <p>{patient.PatientAddress}</p>
             <p>{patient.PatientPostcode}</p>
             <p>Age: {patient.PatientAge}</p>
+            <button onClick={() => handleModify(patient)}>Modify</button>
+            <button onClick={() => handleDelete(patient.PatientID)}>Delete</button>
           </Card>
         ))}
       </CardContainer>
