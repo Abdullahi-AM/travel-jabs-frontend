@@ -106,6 +106,16 @@ export default function Appointments() {
     }
   };
 
+  const handleDelete = async (id) => {
+    const response = await API.delete(`${apiURL}/appointments/${id}`);
+    if (response.isSuccess) {
+      setSubmitMessage("Appointment deleted successfully!");
+      fetchAppointments();
+    } else {
+      setSubmitMessage(`Failed to delete: ${response.message}`);
+    }
+  };
+
   if (loading) return <p>Loading appointments...</p>;
   if (error) return <p>Error: {error}</p>;
   if (!appointments || appointments.length === 0) return <p>No appointments found.</p>;
@@ -186,6 +196,7 @@ export default function Appointments() {
             <p>Clinician: {appointment.AppointmentStaffFirstname} {appointment.AppointmentStaffLastname}</p>
             <p>Status: {appointment.AppointmentStatusName}</p>
             <button onClick={() => handleModify(appointment)}>Modify</button>
+            <button onClick={() => handleDelete(appointment.AppointmentID)}>Delete</button>
           </Card>
         ))}
       </CardContainer>
